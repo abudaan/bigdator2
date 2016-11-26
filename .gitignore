@@ -1,0 +1,7 @@
+.env
+node_modules
+server/data/database_abu.sh
+todo.txt
+npm-debug.log
+downloads
+build

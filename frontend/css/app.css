@@ -1,0 +1,88 @@
+html, body {
+  // height: 100%;
+  // overflow: hidden;
+  font-family: monospace;
+  font-size: 13px;
+}
+
+#app{
+  width: 100%;
+}
+
+#controls{
+  margin: 20px;
+}
+
+.visualisation{
+  height: 600px;
+  width: 600px;
+  float: left;
+  background-color: #fff;
+  outline: dotted #ccc 1px;
+  position: absolute;
+  margin: 20px;
+  // left: -3000px;
+}
+
+.axis path, .axis line {
+  fill: none;
+  stroke: blue;
+  shape-rendering: crispEdges;
+}
+
+.x path{
+  stroke: #ff0000;
+}
+
+.y path{
+  stroke: #00ff00;
+}
+
+.label {
+  //margin-top: 0px;
+  //margin-bottom: 18px;
+  color: #333;
+  font-size: 13px;
+}
+
+.dot:hover{
+  cursor: pointer;
+}
+
+.tooltip {
+  position: absolute;
+  height: 50;
+  background: url(../img/black80.png);
+  padding: 7px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  color: white;
+  -moz-box-shadow: 1px 1px 1px #666;
+  -webkit-box-shadow: 1px 1px 1px #666;
+  box-shadow: 1px 1px 1px #666;
+  pointer-events: none;
+  z-index:5000;
+}
+
+.tooltip_title {
+  font-size: 16px;
+  // line-height: 18px;
+  text-align: center;
+}
+
+p.tooltip_data {
+  font-size: 14px;
+  margin-top:0px;
+  margin-bottom: 0px
+}
+
+p.tooltip_title{
+  margin-bottom: 3px;
+  padding-bottom: 3px;
+}
+
+
+.leaflet-container {
+  height: 400px;
+  width: 100%;
+}
