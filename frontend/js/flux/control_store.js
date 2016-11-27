@@ -30,6 +30,7 @@ class ControlStore extends ReduceStore{
         type: 'date_range', // should be a constant
         id: 'date_range',
         label: 'select a date range',
+        update: true,
       }
     }
   }
@@ -48,12 +49,17 @@ class ControlStore extends ReduceStore{
             endValue,
             startLabel: '' + startValue,
             endLabel: '' + endValue,
-          }
+            update: false,
+          },
         }
 
       case constants.DATE_RANGE_UPDATED:
         return {
           ...state,
+          dateSlider: {
+            ...state.dateSlider,
+            update: true,
+          },
         }
 
       default:

@@ -11,20 +11,12 @@ const app = express()
 //   return next()
 // })
 app.use('/', express.static('./frontend'));
-//app.use(bodyParser.json())
-//app.use(bodyParser.urlencoded({
-//  extended: true
-//}))
 
 app.use('/graphql', bodyParser.json(), apolloExpress({schema}))
 
 app.use('/graphiql', graphiqlExpress({
   endpointURL: '/graphql',
 }));
-
-
-//app.get('/buurten', getCombinedData)
-//app.get('/meldingen', getReports)
 
 
 process.on('exit', function (){

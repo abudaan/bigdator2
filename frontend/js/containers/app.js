@@ -27,7 +27,7 @@ class App extends Component{
     return [UIStore, MapStore, ControlStore, ScatterPlotStore]
   }
 
-  static calculateState(){
+  static calculateState(prevState){
 
     console.log('[APOLLO]', Client.store.getState())
 
@@ -49,11 +49,20 @@ class App extends Component{
     //   initializing = true
     // }
 
-    let start = controlState.dateSlider.startValue
-    let end = controlState.dateSlider.endValue
+    //console.log(prevState)
+
+    let start
+    let end
+
+    if(controlState.dateSlider.update === true){
+      start = controlState.dateSlider.startValue
+      end = controlState.dateSlider.endValue
+    }else if(prevState !== null){
+      start = prevState.scatterPlotState.start
+      end = prevState.scatterPlotState.end
+    }
 
     //console.log(start, end)
-
 
     return {
       // decide which panels to show and where they should be positioned
@@ -85,6 +94,9 @@ class App extends Component{
         name: mapState.hoodName,
         hoodId: mapState.hoodId,
         onClick: Actions.selectHood,
+        // style: {
+        //   top: 600
+        // }
       },
       //date: new Date().getTime(),
     }

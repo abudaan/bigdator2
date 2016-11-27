@@ -19,7 +19,8 @@ html, body {
   float: left;
   background-color: #fff;
   outline: dotted #ccc 1px;
-  position: absolute;
+  // position: absolute;
+  position: relative;
   margin: 20px;
   // left: -3000px;
 }
@@ -79,10 +80,4 @@ p.tooltip_data {
 p.tooltip_title{
   margin-bottom: 3px;
   padding-bottom: 3px;
-}
-
-
-.leaflet-container {
-  height: 400px;
-  width: 100%;
 }

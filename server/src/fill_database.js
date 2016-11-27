@@ -6,7 +6,9 @@ sql.setDialect('postgres')
 
 let query = 'DROP TABLE IF EXISTS combined2;\n'
 query += `CREATE TABLE combined2(
-  id SERIAL, gemeente varchar(255),
+  id SERIAL,
+  gemeente varchar(255),
+  kleur varchar(7),
   jaar INTEGER,
   woz INTEGER DEFAULT 0,
   inkomen FLOAT(1) DEFAULT 0,
@@ -32,7 +34,8 @@ rows.forEach(row => {
       value = 0
     }
     // console.log(value)
-    query += `INSERT INTO combined2 (gemeente, jaar, woz) VALUES ('${name}', ${year}, ${value});\n`
+    let color = '#' + ((1 << 24) * Math.random() | 0).toString(16)
+    query += `INSERT INTO combined2 (gemeente, kleur, jaar, woz) VALUES ('${name}', '${color}', ${year}, ${value});\n`
   }
 })
 

@@ -3,6 +3,16 @@ import L from 'leaflet'
 import * as topojson from 'topojson-client'
 
 
+function _createMap(data){
+  let inverted = {}
+  Object.keys(data).forEach(key => {
+    inverted[data[key]] = key
+  })
+  // console.log(inverted)
+  return inverted
+}
+
+
 class Leaflet extends Component {
 
   static displayName = 'Leaflet'
@@ -32,7 +42,8 @@ class Leaflet extends Component {
     let tiles = L.tileLayer(
       '//{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
         attribution: '<a href="//openstreetmap.org">OpenStreetMap</a> contributors',
-        maxZoom: 18
+        minZoom: 1,
+        maxZoom: 10
       }
     )
     tiles.addTo(this.map)
@@ -50,6 +61,12 @@ class Leaflet extends Component {
     //console.log('hoods', this.hoods)
     if(this.props.data !== null && this.hoods === null){
       //console.log(1)
+      // this.hoods = L.geoJson(this.props.data, {
+      //   style: this.style,
+      //   onEachFeature: this.onEachFeature.bind(this),
+      // })
+      this.propertyMap = _createMap(this.props.data.objects.collection.map)
+      //console.log(this.props.data)
       this.hoods = L.geoJson(topojson.feature(this.props.data, this.props.data.objects.collection), {
         style: this.style,
         onEachFeature: this.onEachFeature.bind(this),
@@ -71,6 +88,7 @@ class Leaflet extends Component {
 
   onEachFeature(feature, layer){
     //console.log(layer)
+
     layer.on({
       mouseover: e => {
         e.target.setStyle({
@@ -88,7 +106,7 @@ class Leaflet extends Component {
         })
       },
       click: e => {
-        console.log(e.target.feature.properties.GM_NAAM)
+        console.log(e.target.feature.properties[this.propertyMap.GM_NAAM])
         //this.props.onClick(e)
       }
     })
@@ -97,7 +115,7 @@ class Leaflet extends Component {
 
   render() {
     return (<div>
-      <span className="leaflet-react" />
+      <span className="visualisation" id="leaflet"/>
     </div>)
   }
 }

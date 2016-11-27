@@ -1,4 +1,4 @@
-import React, {Component}from 'react'
+import React, {Component, PropTypes}from 'react'
 import ReactDOM from 'react-dom'
 import * as d3 from 'd3'
 import {getPosition} from '../util'
@@ -10,6 +10,7 @@ const GetHoods = gql`
   query economics($start: Int!, $end: Int!, $name: String){
     economics(start: $start, end: $end, name: $name){
       gemeente,
+      kleur,
       woz,
       inkomen,
       participatie,
@@ -26,7 +27,11 @@ class ScatterPlot extends Component{
   static displayName = 'ScatterPlot'
 
   static propTypes = {
-
+    data: PropTypes.object,
+    height: PropTypes.number,
+    margins: PropTypes.object,
+    onClick: PropTypes.func,
+    width: PropTypes.number,
   }
 
   constructor(props){
@@ -35,8 +40,9 @@ class ScatterPlot extends Component{
   }
 
 
-  componentDidMount(props) {
-    console.log(this.props)
+  componentDidMount() {
+    //this.element = ReactDOM.findDOMNode(this)
+    this.element = document.getElementById('scatter_plot')
 
     let {
       width,
@@ -45,8 +51,10 @@ class ScatterPlot extends Component{
     } = this.props
 
     this.xScale = d3.scaleLinear().range([0, width])
+    this.xScale.domain([50, 90])
+
     this.yScale = d3.scaleLinear().range([height, 0])
-    //this.xScale.domain([0, 100])
+    this.xScale.domain([100, 500])
 
     this.yValue = (d) => {
       return +d.woz
@@ -66,11 +74,6 @@ class ScatterPlot extends Component{
       return this.yScale(this.yValue(d))
     }
 
-    // this.cValue = (d) => {
-    //   return d.bu_code
-    // }
-
-    this.element = ReactDOM.findDOMNode(this)
 
     this.svg = d3.select('#scatter_plot').append('svg')
     .attr('width', width + margins.left + margins.right)
@@ -89,7 +92,6 @@ class ScatterPlot extends Component{
     .attr('y', 40)
     .style('text-anchor', 'end')
     .text('arbeidsparticipatie')
-    // .text('gem. vullingsperc. van de containers'+ (app.singleBuurt?'':'per buurt'));
 
     //y-axis
     this.svg.append('g')
@@ -99,7 +101,6 @@ class ScatterPlot extends Component{
     .attr('class', 'label')
     .style('text-anchor', 'end')
     .text('woz waarde')
-    //.text('totaal aantal stortingen' + (app.singleBuurt?'':'per buurt'))
 
     // add the tooltip area to the webpage
     this.tooltip = d3.select('#scatter_plot').append('div')
@@ -111,11 +112,9 @@ class ScatterPlot extends Component{
 
   componentDidUpdate() {
 
-    //d3.update(this.element, this.getD3State())
 
     let{
       data,
-      colors,
       width,
       height,
       onClick,
@@ -127,9 +126,7 @@ class ScatterPlot extends Component{
       return
     }
 
-
-    // @todo: should only render if data has changed!
-    let warning = this.svg
+    this.svg
     .selectAll('.no-data')
     .remove()
 
@@ -150,10 +147,10 @@ class ScatterPlot extends Component{
 
     //this.xScale.domain([d3.min(data, this.xValue), d3.max(data, this.xValue)])
     this.xScale.domain([50, d3.max(data, this.xValue)])
-    this.svg.select('.y.axis').transition().duration(1000).call(d3.axisLeft(this.yScale))
+    this.svg.select('.y.axis').transition().duration(100).call(d3.axisLeft(this.yScale))
 
     this.yScale.domain([0, d3.max(data, this.yValue)])
-    this.svg.select('.x.axis').transition().duration(1000).call(d3.axisBottom(this.xScale))
+    this.svg.select('.x.axis').transition().duration(100).call(d3.axisBottom(this.xScale))
 
     dot
     .enter()
@@ -165,8 +162,7 @@ class ScatterPlot extends Component{
     .attr('cx', this.xMap)
     .attr('cy', this.yMap)
     .style('fill', d => {
-      //return colors[this.cValue(d)]
-      return '#'+((1<<24)*Math.random()|0).toString(16)
+      return d.kleur
     })
     .on('mouseover', d => {
       this.tooltip.transition()
@@ -175,8 +171,8 @@ class ScatterPlot extends Component{
 
       let offset = getPosition(this.element)
       this.tooltip.html(this._getHTML(d))
-      .style('left', (d3.event.clientX - offset.x + 50) + 'px')
-      .style('top', (d3.event.clientY - offset.y - 50) + 'px')
+      .style('left', (d3.event.clientX - offset.x + 15) + 'px')
+      .style('top', (d3.event.clientY - offset.y + 50) + 'px')
     })
     .on('mouseout', () => {
       this.tooltip.transition()
@@ -190,18 +186,15 @@ class ScatterPlot extends Component{
 
     dot
     .transition()
-    .duration(1000)
-    //.attr('r', function(d) { return( d.meldingen? Math.sqrt(10 + d.meldingen * 10) : 10);})
+    .duration(100)
     .attr('r', (d) => {
-      return(typeof d.inkomen !== 'undefined' ? Math.sqrt(10 + d.inkomen * 10) : 10)
+      return d.inkomen === 0 ? 10 : Math.sqrt(10 + d.inkomen * 10)
     })
     .attr('cx', this.xMap)
     .attr('cy', this.yMap)
     .style('fill', (d) => {
-      //return colors[this.cValue(d)]
-      return '#'+((1<<24)*Math.random()|0).toString(16)
+      return d.kleur
     })
-
   }
 
 
@@ -221,7 +214,7 @@ class ScatterPlot extends Component{
 
 
   render() {
-    return <div id="scatter_plot"/>
+    return <div className="visualisation" id="scatter_plot"/>
   }
 }
 
