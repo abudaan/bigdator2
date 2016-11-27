@@ -58,6 +58,6 @@
   "scripts": {
     "start": "babel-node ./server/src/server.js",
     "watch": "watchify ./frontend/js/index.js -t [ babelify ] -o ./frontend/build/app.js --debug --verbose",
-    "build": "NODE_ENV=production browserify js/app.js -t [ babelify ] --debug | exorcist build/app.js.map | uglifyjs -c > build/app.js"
+    "build": "NODE_ENV=production browserify ./frontend/js/app.js -t [ babelify ] --debug | exorcist ./frontend/build/app.js.map | uglifyjs -c > build/app.js"
   }
 }
