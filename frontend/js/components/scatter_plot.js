@@ -11,6 +11,7 @@ const GetHoods = gql`
     economics(start: $start, end: $end, name: $name){
       gemeente,
       kleur,
+      jaar,
       woz,
       inkomen,
       participatie,
@@ -28,6 +29,7 @@ class ScatterPlot extends Component{
 
   static propTypes = {
     data: PropTypes.object,
+    name: PropTypes.string,
     height: PropTypes.number,
     margins: PropTypes.object,
     onClick: PropTypes.func,
@@ -41,8 +43,8 @@ class ScatterPlot extends Component{
 
 
   componentDidMount() {
-    //this.element = ReactDOM.findDOMNode(this)
-    this.element = document.getElementById('scatter_plot')
+    this.element = ReactDOM.findDOMNode(this)
+    //this.element = document.getElementById('scatter_plot')
 
     let {
       width,
@@ -74,7 +76,6 @@ class ScatterPlot extends Component{
       return this.yScale(this.yValue(d))
     }
 
-
     this.svg = d3.select('#scatter_plot').append('svg')
     .attr('width', width + margins.left + margins.right)
     .attr('height', height + margins.top + margins.bottom)
@@ -86,10 +87,12 @@ class ScatterPlot extends Component{
     .attr('class', 'x axis')
     .attr('transform', 'translate(0,' + height + ')')
     .call(d3.axisBottom(this.xScale))
+
+    this.svg.append('g')
     .append('text')
+    .attr('x', width + 40)
+    .attr('y', height + 40)
     .attr('class', 'label')
-    .attr('x', width)
-    .attr('y', 40)
     .style('text-anchor', 'end')
     .text('arbeidsparticipatie')
 
@@ -97,24 +100,31 @@ class ScatterPlot extends Component{
     this.svg.append('g')
     .attr('class', 'y axis')
     .call(d3.axisLeft(this.yScale))
+
+    this.svg.append('g')
     .append('text')
+    .attr('x', -20)
+    .attr('y', -30)
     .attr('class', 'label')
     .style('text-anchor', 'end')
-    .text('woz waarde')
+    .text('woz')
+    //.attr('transform', 'translate(' + margins.left + ',' + margins.top + ')');
 
     // add the tooltip area to the webpage
     this.tooltip = d3.select('#scatter_plot').append('div')
     .attr('class', 'tooltip')
     .style('opacity', 0)
-
   }
 
 
   componentDidUpdate() {
-
+    if(typeof this.props.data === 'undefined'){
+      return
+    }
 
     let{
       data,
+      name,
       width,
       height,
       onClick,
@@ -122,9 +132,7 @@ class ScatterPlot extends Component{
 
     data = data.economics
 
-    if(typeof data === 'undefined'){
-      return
-    }
+    console.log(name === null)
 
     this.svg
     .selectAll('.no-data')
@@ -145,12 +153,14 @@ class ScatterPlot extends Component{
       return
     }
 
-    //this.xScale.domain([d3.min(data, this.xValue), d3.max(data, this.xValue)])
-    this.xScale.domain([50, d3.max(data, this.xValue)])
-    this.svg.select('.y.axis').transition().duration(100).call(d3.axisLeft(this.yScale))
+    if(name === null){
+      //this.xScale.domain([d3.min(data, this.xValue), d3.max(data, this.xValue)])
+      this.xScale.domain([50, d3.max(data, this.xValue)])
+      this.svg.select('.x.axis').transition().duration(100).call(d3.axisBottom(this.xScale))
 
-    this.yScale.domain([0, d3.max(data, this.yValue)])
-    this.svg.select('.x.axis').transition().duration(100).call(d3.axisBottom(this.xScale))
+      this.yScale.domain([50, d3.max(data, this.yValue)])
+      this.svg.select('.y.axis').transition().duration(100).call(d3.axisLeft(this.yScale))
+    }
 
     dot
     .enter()
@@ -180,7 +190,7 @@ class ScatterPlot extends Component{
       .style('opacity', 0)
     })
     .on('click', e => {
-      onClick(e)
+      onClick(e.gemeente)
     })
 
 
@@ -204,11 +214,19 @@ class ScatterPlot extends Component{
 
 
   _getHTML(d){
+    if(d.jaar === null){
+      return `
+        <p class="tooltip_data">${d.gemeente}</p>
+        <br>woz waarde:&nbsp;${d.woz * 1000}
+        <br>inkomen:&nbsp;${d.inkomen * 1000}
+        <br>participatie:&nbsp;${d.participatie}%
+      `
+    }
     return `
-      <p class="tooltip_data">${d.gemeente}</p>
-      <br>woz waarde: ${d.woz * 1000}
-      <br>inkomen: ${d.inkomen * 1000}
-      <br>participatie: ${d.participatie}%
+      <p class="tooltip_data">${d.jaar}</p>
+      <br>woz waarde:&nbsp;${d.woz * 1000}
+      <br>inkomen:&nbsp;${d.inkomen * 1000}
+      <br>participatie:&nbsp;${d.participatie}%
     `
   }
 

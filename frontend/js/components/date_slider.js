@@ -66,7 +66,7 @@ class DateSlider extends React.Component{
 
     return (
       <div>
-        <label htmlFor={id} style={labelStyle} dangerouslySetInnerHTML={createLabel('Start: ' + this.props.startLabel)} />
+        <label htmlFor={id} style={labelStyle} dangerouslySetInnerHTML={createLabel('Start jaar: ' + this.props.startLabel)} />
         <input
           style={inputStyle}
           onMouseUp={this.props.onMouseUp}
@@ -81,7 +81,7 @@ class DateSlider extends React.Component{
           step={this.props.step}
         />
         <br />
-        <label htmlFor={id} style={labelStyle} dangerouslySetInnerHTML={createLabel('End: ' + this.props.endLabel)} />
+        <label htmlFor={id} style={labelStyle} dangerouslySetInnerHTML={createLabel('Eind jaar: ' + this.props.endLabel)} />
         <input
           style={inputStyle}
           onMouseUp={this.props.onMouseUp}

@@ -15,9 +15,14 @@ class Controls extends Component{
 
   render() {
     let options = []
-    this.props.visualisations.options.forEach(option => {
-      options.push(<Select {...option} key={option.id} onChange={this.props.visualisations.onSelect} />)
-    })
+    // this.props.visualisations.options.forEach(option => {
+    //   options.push(<Select {...option} key={option.id} onChange={this.props.visualisations.onSelect} />)
+    // })
+
+    let name = this.props.dateSlider.name
+    if(name === null){
+      name = 'Alle gemeenten'
+    }
 
     return (
       <div>
@@ -25,6 +30,7 @@ class Controls extends Component{
           {...this.props.dateSlider}
         />
         {options}
+        <h1>{name}</h1>
       </div>
     )
 

@@ -9,9 +9,7 @@ import MapStore from '../flux/map_store'
 import ControlStore from '../flux/control_store'
 import ScatterPlotStore from '../flux/scatter_plot_store'
 import Actions from '../flux/actions'
-import {formatDate} from '../util'
 import Client from '../apollo/apollo_client'
-import ApolloClient from 'apollo-client'
 
 
 /**
@@ -77,28 +75,25 @@ class App extends Component{
         onChange: Actions.changeDateRange,
         onMouseUp: Actions.updateDateRange,
         onMouseDown: () => {},
+        name: mapState.municipality,
       },
       mapState: {
         ...mapState,
-        start,
-        end,
-        name: mapState.hoodName,
+        show: true,
         onZoom: Actions.onMapZoom,
-        selectHood: Actions.selectHood,
+        onClick: Actions.selectMunicipality,
         storeBounds: Actions.storeBounds,
       },
       scatterPlotState: {
         ...scatterPlotState,
         start,
         end,
-        name: mapState.hoodName,
-        hoodId: mapState.hoodId,
-        onClick: Actions.selectHood,
+        name: mapState.municipality,
+        onClick: Actions.selectMunicipality,
         // style: {
         //   top: 600
         // }
       },
-      //date: new Date().getTime(),
     }
   }
 
@@ -137,8 +132,7 @@ class App extends Component{
       <div>
         <Controls dateSlider={this.state.dateSlider} visualisations={this.state.visualisations} />
         <Leaflet
-          data={this.state.mapState.data}
-          zoom={this.state.mapState.zoom}
+          {...this.state.mapState}
           key={'leaflet'}
         />
         <ScatterPlot

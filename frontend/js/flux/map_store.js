@@ -10,6 +10,8 @@ class MapStore extends ReduceStore{
       data: null,
       zoom: 9,
       maxZoom: 18,
+      municipality: null,
+      update: false,
     }
   }
 
@@ -28,10 +30,27 @@ class MapStore extends ReduceStore{
         return {
           ...state,
           zoom: state.map.getZoom(),
+          update: false,
+        }
+
+
+      case constants.ZOOM_TO_HOOD:
+        let municipality = action.payload.name
+        if(state.municipality === municipality){
+          municipality = null
+        }
+
+        return {
+          ...state,
+          municipality,
+          update: true,
         }
 
       default:
-        return state
+        return {
+          ...state,
+          update: false
+        }
     }
   }
 }

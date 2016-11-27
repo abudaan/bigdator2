@@ -19,8 +19,12 @@ class Leaflet extends Component {
 
   static propTypes = {
     data: PropTypes.object,
+    maxZoom: PropTypes.number.isRequired,
+    municipality: PropTypes.string,
+    onClick: PropTypes.func,
+    show: PropTypes.bool,
+    update: PropTypes.bool,
     zoom: PropTypes.number.isRequired,
-//    maxZoom: PropTypes.number.isRequired,
   }
 
   constructor(){
@@ -29,10 +33,11 @@ class Leaflet extends Component {
       weight: 0.1,
       opacity: 1,
       color: 'black',
-      fillColor: 'black',
-      fillOpacity: 0.1
+      fillColor: 'red',
+      fillOpacity: 0
     }
-    this.hoods = null
+    this.borders = null
+    this.popup = L.popup()
   }
 
 
@@ -55,28 +60,41 @@ class Leaflet extends Component {
   }
 
 
-  componentDidUpdate(oldProps){
-    //console.log('componentDidUpdate', oldProps, this.props)
-    //console.log(topojson)
-    //console.log('hoods', this.hoods)
-    if(this.props.data !== null && this.hoods === null){
-      //console.log(1)
-      // this.hoods = L.geoJson(this.props.data, {
+  componentDidUpdate(prevProps){
+    //console.log('componentDidUpdate', prevProps, this.props)
+
+    if(this.props.data !== null && this.borders === null){
+      // this.borders = L.geoJson(this.props.data, {
       //   style: this.style,
       //   onEachFeature: this.onEachFeature.bind(this),
       // })
       this.propertyMap = _createMap(this.props.data.objects.collection.map)
-      //console.log(this.props.data)
-      this.hoods = L.geoJson(topojson.feature(this.props.data, this.props.data.objects.collection), {
+      this.borders = L.geoJson(topojson.feature(this.props.data, this.props.data.objects.collection), {
         style: this.style,
         onEachFeature: this.onEachFeature.bind(this),
       })
-      this.hoods.addTo(this.map)
-      this.map.fitBounds(this.hoods.getBounds())
+      this.borders.addTo(this.map)
+      this.map.fitBounds(this.borders.getBounds())
     }
-    if(this.hoods !== null && oldProps.zoom !== this.props.zoom){
-      //console.log(2)
-      this.map.fitBounds(this.hoods.getBounds())
+    if(this.props.update === true){
+      this._reset(prevProps.municipality)
+
+      if(this.props.municipality === null){
+        this.map.fitBounds(this.borders.getBounds())
+      }else{
+        this.borders.eachLayer(layer => {
+          let name = layer.feature.properties[this.propertyMap.GM_NAAM]
+          if(name === this.props.municipality) {
+            layer.off('mouseover')
+            layer.off('mouseout')
+            layer.setStyle({
+              fillColor: 'blue',
+              fillOpacity: 0.5,
+            })
+            this.map.fitBounds(layer.getBounds())
+          }
+        })
+      }
     }
   }
 
@@ -86,34 +104,71 @@ class Leaflet extends Component {
   }
 
 
-  onEachFeature(feature, layer){
-    //console.log(layer)
+  _reset(prevName){
+    if(prevName === null){
+      return
+    }
 
-    layer.on({
-      mouseover: e => {
-        e.target.setStyle({
-          weight: 0.5,
-          color: '#f00',
-        })
-        if (!L.Browser.ie && !L.Browser.opera) {
-          e.target.bringToFront()
-        }
-      },
-      mouseout: e => {
-        e.target.setStyle({
+    this.borders.eachLayer(layer => {
+      let name = layer.feature.properties[this.propertyMap.GM_NAAM]
+      if(name === prevName) {
+        layer.setStyle({
           weight: 0.1,
-          color: '#000',
+          fillColor: '#f00',
+          fillOpacity: 0,
         })
-      },
+        layer.on({
+          mouseover: this._onMouseOver.bind(this),
+          mouseout: this._onMouseOut.bind(this),
+        })
+      }
+    })
+  }
+
+
+  _onMouseOver(e){
+    e.target.setStyle({
+      weight: 0.5,
+      color: '#f00',
+      fillOpacity: 0.3,
+    })
+    if(!L.Browser.ie && !L.Browser.opera){
+      e.target.bringToFront()
+    }
+    let name = e.target.feature.properties[this.propertyMap.GM_NAAM]
+    this.popup
+    .setLatLng(e.latlng)
+    .setContent(`<p>${name}</p>`)
+    .openOn(this.map);
+  }
+
+
+  _onMouseOut(e){
+    e.target.setStyle({
+      weight: 0.1,
+      color: '#000',
+      fillOpacity: 0,
+    })
+    this.map.closePopup()
+  }
+
+
+  onEachFeature(feature, layer){
+    layer.on({
+      mouseover: this._onMouseOver.bind(this),
+      mouseout: this._onMouseOut.bind(this),
       click: e => {
-        console.log(e.target.feature.properties[this.propertyMap.GM_NAAM])
-        //this.props.onClick(e)
+        let name = e.target.feature.properties[this.propertyMap.GM_NAAM]
+        this.props.onClick(name)
       }
     })
   }
 
 
   render() {
+    if(this.props.show !== true){
+      return null
+    }
     return (<div>
       <span className="visualisation" id="leaflet"/>
     </div>)

@@ -4,6 +4,8 @@ import fs from 'fs'
 
 sql.setDialect('postgres')
 
+let colors = {}
+
 let query = 'DROP TABLE IF EXISTS combined2;\n'
 query += `CREATE TABLE combined2(
   id SERIAL,
@@ -25,6 +27,12 @@ rows.forEach(row => {
   name = name.replace('\'', '\'\'') // 's-Hertogenbosch -> ''s-Hertogenbosch
   name = name.replace(/\(.*\)/, '') // remove (L.) etc
   name = name.trim()
+
+  let color = colors[name]
+  if(typeof color === 'undefined'){
+    color = '#' + ((1 << 24) * Math.random() | 0).toString(16)
+    colors[name] = color
+  }
   //console.log(name)
   let year = 2004
   for(let i = 1; i < data.length; i++){
@@ -34,7 +42,6 @@ rows.forEach(row => {
       value = 0
     }
     // console.log(value)
-    let color = '#' + ((1 << 24) * Math.random() | 0).toString(16)
     query += `INSERT INTO combined2 (gemeente, kleur, jaar, woz) VALUES ('${name}', '${color}', ${year}, ${value});\n`
   }
 })

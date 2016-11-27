@@ -2,7 +2,26 @@ import {createSQLPromise} from '../sql_promise'
 
 export function getEconomics(start, end, name){
 
-  let query = `SELECT
+  let query
+
+  if(typeof name !== 'undefined'){
+    query = `SELECT
+      gemeente,
+      kleur,
+      woz,
+      participatie,
+      inkomen,
+      jaar
+      FROM combined2
+      WHERE jaar>=${start} AND jaar<=${end}
+      AND gemeente='${name}'
+      ORDER BY jaar
+    ;`
+
+    return createSQLPromise(query)
+  }
+
+  query = `SELECT
     gemeente,
     kleur,
     ROUND(AVG(woz), 0) AS woz,

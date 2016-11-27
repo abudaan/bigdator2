@@ -42,8 +42,10 @@ html, body {
 .label {
   //margin-top: 0px;
   //margin-bottom: 18px;
+  background: white;
   color: #333;
   font-size: 13px;
+  z-index: 500;
 }
 
 .dot:hover{
@@ -52,7 +54,8 @@ html, body {
 
 .tooltip {
   position: absolute;
-  height: 50;
+  height: auto;
+  width: auto;
   background: url(../img/black80.png);
   padding: 7px;
   -moz-border-radius: 5px;
@@ -62,7 +65,7 @@ html, body {
   -webkit-box-shadow: 1px 1px 1px #666;
   box-shadow: 1px 1px 1px #666;
   pointer-events: none;
-  z-index:5000;
+  z-index: 5000;
 }
 
 .tooltip_title {
