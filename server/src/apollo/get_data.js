@@ -5,6 +5,7 @@ export function getEconomics(start, end, name){
   let query
 
   if(typeof name !== 'undefined'){
+    name = name.replace('\'', '\'\'')
     query = `SELECT
       gemeente,
       kleur,

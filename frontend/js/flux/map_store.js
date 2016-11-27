@@ -36,7 +36,6 @@ class MapStore extends ReduceStore{
 
       case constants.ZOOM_TO_HOOD:
         let municipality = action.payload.name
-        municipality = municipality.replace('\'', '\'\'')
         if(state.municipality === municipality){
           municipality = null
         }

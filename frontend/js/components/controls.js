@@ -22,6 +22,8 @@ class Controls extends Component{
     let name = this.props.dateSlider.name
     if(name === null){
       name = 'Alle gemeenten'
+    // }else{
+    //   name = name.replace("''", "'")
     }
 
     return (
