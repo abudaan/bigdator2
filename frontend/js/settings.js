@@ -3,7 +3,8 @@ export default {
   serverUrl: '',
   baseUrl: './data/',
   mapData: {
-    hoods: 'gem_2015.min.topojson',
+    hoods: 'gemeenten.min.topojson',
+    // hoods: 'gem_2015.min.topojson',
     // hoods: 'gem_2015.geojson',
   },
   start: 2005,

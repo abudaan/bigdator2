@@ -132,8 +132,6 @@ class ScatterPlot extends Component{
 
     data = data.economics
 
-    console.log(name === null)
-
     this.svg
     .selectAll('.no-data')
     .remove()

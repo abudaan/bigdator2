@@ -83,7 +83,7 @@ class Leaflet extends Component {
         this.map.fitBounds(this.borders.getBounds())
       }else{
         this.borders.eachLayer(layer => {
-          let name = layer.feature.properties[this.propertyMap.GM_NAAM]
+          let name = layer.feature.properties[this.propertyMap.gemeentena]
           if(name === this.props.municipality) {
             layer.off('mouseover')
             layer.off('mouseout')
@@ -110,7 +110,7 @@ class Leaflet extends Component {
     }
 
     this.borders.eachLayer(layer => {
-      let name = layer.feature.properties[this.propertyMap.GM_NAAM]
+      let name = layer.feature.properties[this.propertyMap.gemeentena]
       if(name === prevName) {
         layer.setStyle({
           weight: 0.1,
@@ -135,7 +135,7 @@ class Leaflet extends Component {
     if(!L.Browser.ie && !L.Browser.opera){
       e.target.bringToFront()
     }
-    let name = e.target.feature.properties[this.propertyMap.GM_NAAM]
+    let name = e.target.feature.properties[this.propertyMap.gemeentena]
     this.popup
     .setLatLng(e.latlng)
     .setContent(`<p>${name}</p>`)
@@ -158,7 +158,7 @@ class Leaflet extends Component {
       mouseover: this._onMouseOver.bind(this),
       mouseout: this._onMouseOut.bind(this),
       click: e => {
-        let name = e.target.feature.properties[this.propertyMap.GM_NAAM]
+        let name = e.target.feature.properties[this.propertyMap.gemeentena]
         this.props.onClick(name)
       }
     })
