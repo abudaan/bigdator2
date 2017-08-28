@@ -1,16 +1,16 @@
-####1. Install dependencies
+#### 1. Install dependencies
 
 - nodejs and npm
 - postgresql database
 - nginx (optional)
 
 
-####2. Install packages
+#### 2. Install packages
 
 Run from project root folder: `npm install`
 
 
-####3. Set postgresql environment variables
+#### 3. Set postgresql environment variables
 
 In project root folder:
 
@@ -19,12 +19,12 @@ In project root folder:
 - export PGDATABASE=your_database
 
 
-####4. Create table and import data
+#### 4. Create table and import data
 
 Run from project root folder: `node_modules/.bin/babel-node ./server/src/fill_database.js`
 
 
-####5. Build or watch javascript files
+#### 5. Build or watch javascript files
 
 Run from project root folder:
 
@@ -33,7 +33,7 @@ Run from project root folder:
 - or watch: `npm run watch`
 
 
-####6. Compile and start webserver
+#### 6. Compile and start webserver
 
 Run from project root folder: `npm start`
 
@@ -45,7 +45,7 @@ To run the server forever in a server environment choose either of these command
 - `node_modules/.bin/babel-node ./server/src/server.js > /dev/null 2>&1 &`
 
 
-####7. Setup nginx (optional)
+#### 7. Setup nginx (optional)
 
 You can run the client directly by navigating to http://localhost:5002
 
@@ -69,7 +69,7 @@ Because geojson and topojson can be quite large consider enabling gzip compressi
 
 
 
-####Topojson
+#### Topojson
 
 In case you wish to create your own fresh topojson file follow these steps:
 
