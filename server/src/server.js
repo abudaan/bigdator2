@@ -1,7 +1,10 @@
+import {config} from 'dotenv'
 import express from 'express'
 import bodyParser from 'body-parser'
 import {apolloExpress, graphiqlExpress} from 'apollo-server'
 import schema from './apollo/schema'
+
+config()
 
 const app = express()
 app.use('/', express.static('./frontend'));

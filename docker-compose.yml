@@ -1,0 +1,38 @@
+version: '2'
+services:
+    app:
+        build:
+            context: ./tasks/docker/app_debug
+            args: {USER_ID: $USER_ID}
+        depends_on: [psql]
+        volumes:
+            - ".:/app"
+        command: bash
+        environment:
+            USE_POLLING_WATCHES: 1
+            DOCKER: 1
+            PGHOST: psql
+        networks: [default]
+
+    nginx:
+        image: nginx:latest
+        volumes:
+            - ".:/app"
+            - "./tasks/files/nginx.dev.conf:/etc/nginx/conf.d/dev.conf"
+            - "./tasks/files/nginx.prod.conf:/etc/nginx/conf.d/default.conf"
+        ports: ["80:80", "8080:8080"]
+        networks:
+            default:
+                aliases:
+                    - tas.dev
+                    - app.dev
+
+    psql:
+        image: postgres:9.4
+        environment:
+            POSTGRES_USER: tg
+        ports: ["5432:5432"]
+        networks: [default]
+
+networks:
+    default: ~
